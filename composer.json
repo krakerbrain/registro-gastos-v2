@@ -1,0 +1,17 @@
+{
+    "name": "mario/registro-gastos-v2",
+    "autoload": {
+        "psr-4": {
+            "Mario\\RegistroGastosV2\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "krakerbrain",
+            "email": "marioplantabaja@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.5"
+    }
+}
