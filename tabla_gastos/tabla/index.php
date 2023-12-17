@@ -1,27 +1,41 @@
-<div class="d-flex justify-content-between mb-3">
+<link rel="stylesheet" href="tabla/tabla-estilos.css">
+<div class="d-flex justify-content-between mb-1">
     <select name="fecha" id="fecha"></select>
     <span id="totalMes"></span>
 </div>
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th scope="col" class="text-center" onclick="ordenar(event, 'descripcion')">
-                <span class="titleTabla">Gasto</span>
-                <i id="i-descripcion" class="fa-solid"></i>
-            </th>
-            <th scope="col" class="text-center" onclick="ordenar(event, 'monto_gasto')">
-                <span class="titleTabla">Monto Gasto</span>
-                <i id="i-monto_gasto" class="fa-solid"></i>
-            </th>
-            <th scope="col" class="text-center" onclick="ordenar(event, 'created_at')">
-                <span class="titleTabla">Fecha</span>
-                <i id="i-created_at" class="fa-solid fa-chevron-down"></i>
-            </th>
-            <th scope="col" class="text-center">Acciones</th>
-        </tr>
-    </thead>
-    <tbody id="gastos"></tbody>
-</table>
+<div class="filtros mb-1">
+    <select name="ordenarPor" id="ordenarPor" onchange="ordenarPor(event)">
+        <option value="reset">Ordenar Por</option>
+        <option value="descripcion asc">Gasto A-Z</option>
+        <option value="descripcion desc">Gasto Z-A</option>
+        <option value="monto_gasto asc">Monto Menor a Mayor</option>
+        <option value="monto_gasto desc">Monto Mayor a Menor</option>
+        <option value="created_at asc">Fecha Más reciente</option>
+        <option value="created_at desc">Fecha Más antigua</option>
+    </select>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th scope="col" class="text-center" onclick="ordenar(event, 'descripcion')">
+                    <span class="titleTabla">Gasto</span>
+                    <i id="i-descripcion" class="fa-solid"></i>
+                </th>
+                <th scope="col" class="text-center" onclick="ordenar(event, 'monto_gasto')">
+                    <span class="titleTabla">Monto Gasto</span>
+                    <i id="i-monto_gasto" class="fa-solid"></i>
+                </th>
+                <th scope="col" class="text-center" onclick="ordenar(event, 'created_at')">
+                    <span class="titleTabla">Fecha</span>
+                    <i id="i-created_at" class="fa-solid fa-chevron-down"></i>
+                </th>
+                <th scope="col" class="text-center acciones">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="gastos"></tbody>
+    </table>
+</div>
 <input type="hidden" name="ordenColumnas" id="ordenColumnas" value="">
 <input type="hidden" name="columnaActiva" id="columnaActiva" value="">
 <div id="showModal"></div>
@@ -53,8 +67,17 @@ function cargaMeses() {
     })
 }
 
-function cargaData(selectedDate, columna) {
+function ordenarPor(event) {
 
+    event.preventDefault();
+    let value = event.target.value;
+    columnaActiva.value = value.split(" ")[0];
+    ordenColumnas.value = value.split(" ")[1] == undefined ? "desc" : value.split(" ")[1];
+    let columna = value.split(" ")[0] == "reset" ? "created_at" : value.split(" ")[0];
+    cargaData(undefined, columna);
+}
+
+function cargaData(selectedDate, columna) {
     const select = document.getElementById("fecha");
     const selectedOption = select.options[select.selectedIndex];
     let selectedOptionId = selectedDate == undefined ? selectedOption.id : selectedDate;
@@ -73,9 +96,9 @@ function cargaData(selectedDate, columna) {
         tbody.innerHTML = "";
         datos.forEach(element => {
             tbody.innerHTML += `<tr id="gasto-${element.id}">
-                <td class="align-baseline" >${element.descripcion}</td>
-                <td class="align-baseline text-right" nowrap>${formatoMoneda(element.monto_gasto)}</td>
-                <td class="align-baseline text-center">${element.fecha}</td>
+                <td data-cell="gasto" class="data align-baseline" >${element.descripcion}</td>
+                <td data-cell="monto gasto" class="data align-baseline nowrap">${formatoMoneda(element.monto_gasto)}</td>
+                <td data-cell="fecha" class="data align-baseline">${element.fecha}</td>
                 <td class="d-flex align-items-center justify-content-around">
                                     <a href="#" id="despliegaDesc" onclick="despliegaDesc(event,'gasto-${element.id}')" title="Descripcion">
                                         <i id="icono-ver-gasto-${element.id}" class="fa-solid fa-eye"></i>

@@ -196,6 +196,27 @@ switch ($ingresar) {
 
 
         break;
+    case 'getIdGasto':
+        $gasto = $_POST['gasto'];
+        try {
+            $query = $con->prepare("SELECT id
+                                    FROM tipo_gastos
+                                    WHERE idusuario = :idusuario
+                                    AND descripcion = :gasto
+                                    LIMIT 1
+                                ");
+            $query->bindParam(':idusuario', $idusuario);
+            $query->bindParam(':gasto', $gasto);
+            $query->execute();
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
+            $json_result = json_encode($result);
+            echo $json_result;
+            break;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+
+        break;
 
     default:
         # code...

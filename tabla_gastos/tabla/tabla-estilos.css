@@ -1,0 +1,22 @@
+.table-responsive {
+  max-width: 100%;
+  overflow: auto;
+}
+
+@media (max-width: 400px) {
+  .table-responsive td {
+    padding: 0.5rem;
+  }
+  .table-responsive .data {
+    display: block;
+  }
+  .table-responsive th {
+    display: none;
+  }
+
+  .table-responsive .data::before {
+    content: attr(data-cell) ": ";
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+}

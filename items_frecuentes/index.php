@@ -5,9 +5,10 @@
 </fieldset>
 <script>
 function btnDetalles(id) {
-    $.post("./detalles_gastos/conexiones.php", {
+    idGasto = id == "" ? document.getElementById("tipoGastoId").value : id;
+    $.post("./items_frecuentes/conexiones.php", {
         ingresar: "getDetallesGastos",
-        idGasto: id
+        idGasto: idGasto
     }).done(function(data) {
         showFieldsetDetalles("block");
         let datos = JSON.parse(data);

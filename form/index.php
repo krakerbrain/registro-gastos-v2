@@ -38,13 +38,14 @@
     <div class="input-container">
         <input class="w-100 form-control my-3" type="text" id="tipoGasto" name="tipoGasto" placeholder="Tipo Gasto"
             value="<?= $descripcion != "" ? $descripcion : "" ?>" aria-label="Tipo Gasto" list="gastos"
-            oninput="muestraX('borrarTextoTipoGasto',this)" <?= $descripcion != "" ? "disabled" : "" ?> />
+            oninput="muestraX('borrarTextoTipoGasto',this)" onblur="agregaDescripcion(0,this.value)"
+            <?= $descripcion != "" ? "disabled" : "" ?> />
         <i id="borrarTextoTipoGasto" class="fas fa-times text-danger" onclick="eliminaTexto('tipoGasto',this)"></i>
     </div>
     <datalist id="gastos"></datalist>
     <input type="hidden" name="" id="tipoGastoId" value="">
     <input type="hidden" name="" id="idGasto" value="<?= $idGasto ?>">
-    <?php include "./detalles_gastos/index.php" ?>
+    <?php include "./items_frecuentes/index.php" ?>
     <div class="input-container">
         <input class="w-100 form-control" type="text" id="autocomplete-details" placeholder="Seleccionar Item" disabled>
         <button class="btn btn-primary" id="add-button" onclick="insertaNuevoDetalle(event)">Añadir</button>
@@ -55,6 +56,7 @@
 </form>
 <script>
 document.getElementById("btnRegistraGasto").addEventListener("click", async function(event) {
+
     event.preventDefault();
     let validacion = false;
     let mensajeError = "";
@@ -165,7 +167,6 @@ function insertaNuevoTipoGasto(event, tipoGastoDescripcion) {
         ingresar: "insertaTipoGasto",
         tipoGasto: tipoGastoDescripcion
     }).done(function(data) {
-
         let datos = JSON.parse(data);
         document.getElementById("tipoGastoId").value = datos;
         insertaNuevoDetalle(event)
@@ -189,17 +190,27 @@ function listaGastos() {
     });
 }
 
-document.getElementById("autocomplete-details").addEventListener("input", function(event) {
+document.getElementById("autocomplete-details").addEventListener("input", async function(event) {
     event.preventDefault();
     let value = document.getElementById("autocomplete-details").value;
-    let idGasto = document.getElementById("tipoGastoId").value;
+    let idGasto = "";
+
+    if (document.getElementById("tipoGastoId").value == "") {
+        idGasto = await gastoId(document.getElementById("tipoGasto").value)
+        document.getElementById("idGasto").value = idGasto;
+    } else {
+        idGasto = document.getElementById("idGasto").value;
+    }
+
     let addBtn = document.getElementById("add-button");
+
     $.post("./form/conexiones.php", {
         ingresar: "getDetalles",
         idGasto: idGasto,
         descripcion: value
     }).done(function(data) {
         let datos = JSON.parse(data);
+
         let autocompletarData = datos.map(element => ({
             label: element.descripcion,
             value: element.id
@@ -234,16 +245,35 @@ document.getElementById("autocomplete-details").addEventListener("input", functi
     })
 });
 
+function gastoId(gasto) {
+    return new Promise((resolve, reject) => {
+        $.post("./form/conexiones.php", {
+            ingresar: "getIdGasto",
+            gasto: gasto
+        }).done(function(data) {
+            let datos = JSON.parse(data);
+            resolve(datos[0].id);
+
+        }).fail(function(error) {
+            reject(error);
+        })
+    });
+}
 async function creaBotonesDetallesSeleccionados(id, event, seleccionado) {
+
     event.preventDefault();
     try {
         //Actualiza en la tabla descripción_gastos la columna "seleccionada" en true
         let resultado = await actualizaDetalles(id, seleccionado);
         if (resultado) {
-            let gastoId = accion == "Editar" ? idTipoGasto : document.querySelector(".gastoSelected").getAttribute(
-                "id").split("-")[1];
+            let gastoId = ""
+            if (accion == "Editar") {
+                gastoId = idTipoGasto
+            } else {
+                gastoId = document.querySelector(".gastoSelected") == null ? document.getElementById("idGasto")
+                    .value : document.querySelector(".gastoSelected").getAttribute("id").split("-")[1];
+            }
             await btnDetalles(gastoId);
-            // await listaDetalles(gastoId);
             await btnDetallesSeleccionados()
         }
     } catch (error) {
@@ -275,7 +305,6 @@ function resetDetallesSeleccionados() {
 }
 
 function btnDetallesSeleccionados() {
-
     document.getElementById("detallesSeleccionados").innerHTML = "";
     $.post("./form/conexiones.php", {
         ingresar: "getDetalleGastosSeleccionados",
@@ -296,7 +325,11 @@ function btnDetallesSeleccionados() {
 
 
 
-function agregaDescripcion(id, descripcion, editar) {
+async function agregaDescripcion(id, descripcion, editar) {
+
+    if (id == 0) {
+        id = await gastoId(descripcion);
+    }
 
     if (editar == undefined) {
 
@@ -312,17 +345,20 @@ function agregaDescripcion(id, descripcion, editar) {
 }
 
 function activaBtnGastoFrecuente(id) {
+
     // Selecciona todos los elementos con la clase "active" y "btn"
     const activeBtns = document.querySelectorAll(".active.btn");
 
     // Itera a través de los elementos seleccionados
-    activeBtns.forEach(element => {
-        // Quita la clase "active" de cada elemento
-        element.classList.remove("active");
-        element.classList.remove("gastoSelected");
-    });
-    document.getElementById("btn-" + id).classList.add("active");
-    document.getElementById("btn-" + id).classList.add("gastoSelected");
+    if (activeBtns.length > 0) {
+        activeBtns.forEach(element => {
+            // Quita la clase "active" de cada elemento
+            element.classList.remove("active");
+            element.classList.remove("gastoSelected");
+        });
+        document.getElementById("btn-" + id).classList.add("active");
+        document.getElementById("btn-" + id).classList.add("gastoSelected");
+    }
 }
 
 function muestraX(id, element) {
