@@ -4,17 +4,21 @@
 </nav>
 <ul class="nav nav-pills nav-justified mb-3">
     <li class="nav-item">
-        <a class="nav-link <?= $indice == "inicio" ? "active" : "" ?>" aria-current="" href="<?= $_ENV['URL_INICIO'] ?>">Inicio</a>
+        <a class="nav-link <?= $indice == "inicio" ? "active" : "" ?>" aria-current=""
+            href="<?= $_ENV['URL_INICIO'] ?>">Inicio</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link <?= $indice == "estadisticas" ? "active" : "" ?>" href="<?= $_ENV['URL_ESTADISTICAS'] ?>">Estadísticas</a>
+        <a class="nav-link <?= $indice == "estadisticas" ? "active" : "" ?>"
+            href="<?= $_ENV['URL_ESTADISTICAS'] ?>">Estadísticas</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="<?= $_ENV['URL_DETALLES'] ?>">Detalles</a>
+        <a class="nav-link <?= $indice == "detalles" ? "active" : "" ?>"
+            href="<?= $_ENV['URL_DETALLES'] ?>">Detalles</a>
     </li>
 </ul>
 <!-- Modal de confirmación -->
-<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary text-light">
@@ -35,7 +39,7 @@
 </div>
 
 <script>
-    function confirmarCerrarSesion() {
-        $('#confirmModal').modal('show');
-    }
+function confirmarCerrarSesion() {
+    $('#confirmModal').modal('show');
+}
 </script>

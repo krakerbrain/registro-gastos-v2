@@ -199,11 +199,12 @@ document.getElementById("autocomplete-details").addEventListener("input", async 
         idGasto = await gastoId(document.getElementById("tipoGasto").value)
         document.getElementById("idGasto").value = idGasto;
     } else {
-        idGasto = document.getElementById("idGasto").value;
+        idGasto = document.getElementById("tipoGastoId").value;
     }
 
     let addBtn = document.getElementById("add-button");
 
+    console.log("idgasto: " + idGasto, "value: " + value)
     $.post("./form/conexiones.php", {
         ingresar: "getDetalles",
         idGasto: idGasto,
