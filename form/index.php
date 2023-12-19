@@ -204,7 +204,7 @@ document.getElementById("autocomplete-details").addEventListener("input", async 
 
     let addBtn = document.getElementById("add-button");
 
-    console.log("idgasto: " + idGasto, "value: " + value)
+
     $.post("./form/conexiones.php", {
         ingresar: "getDetalles",
         idGasto: idGasto,

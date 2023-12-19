@@ -21,7 +21,7 @@ switch ($ingresar) {
     case 'getGastos':
         try {
 
-            $query = $con->prepare("SELECT descripcion
+            $query = $con->prepare("SELECT id,descripcion
                                     FROM tipo_gastos
                                     WHERE idusuario = :idusuario
                                     ORDER BY descripcion ASC
