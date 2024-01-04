@@ -40,35 +40,17 @@
 </style>
 
 <div class="d-flex justify-content-between mb-2">
-    <select name=" fecha" id="fecha" onchange="cargaResumenGastos(event)"></select>
+    <select name=" fecha" id="fecha" onchange="cargaData(event)"></select>
 </div>
 <h6>RESUMEN GASTOS</h6>
 <ul id="resumenGastos" class="list-group"></ul>
 
 <script>
-let mesesArray = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre",
-    "Noviembre", "Diciembre"
-];
-
-function cargaMeses() {
-    $.post("../tabla_gastos/tabla/conexiones.php", {
-        ingresar: "getFecha"
-    }).done(function(data) {
-        let datos = JSON.parse(data);
-        let select = document.getElementById("fecha");
-        datos.forEach(element => {
-            let fechaValue = `${mesesArray[element.mes-1]}, ${element.anio}`;
-            select.innerHTML +=
-                `<option id="${element.mes}-${element.anio}" value="${fechaValue}">${fechaValue}</option>`;
-        })
-        cargaResumenGastos();
-    }).fail(function(error) {
-        console.log(error)
-    })
-}
-
-function cargaResumenGastos() {
+function cargaData() {
     resumenGastos.innerHTML = "";
+    resumenItems.innerHTML = "";
+    borrarTextoGasto.style.display = "none";
+    gastoInput.value = "";
 
     const select = document.getElementById("fecha");
     const selectedOption = select.options[select.selectedIndex];

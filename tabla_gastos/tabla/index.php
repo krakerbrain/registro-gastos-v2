@@ -41,31 +41,10 @@
 <div id="showModal"></div>
 
 <script>
-let mesesArray = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre",
-    "Noviembre", "Diciembre"
-];
-
 document.getElementById("fecha").addEventListener("change", function() {
     let fecha = event.currentTarget.selectedOptions[0].id;
     cargaData(fecha);
 })
-
-function cargaMeses() {
-    $.post("./tabla/conexiones.php", {
-        ingresar: "getFecha"
-    }).done(function(data) {
-        let datos = JSON.parse(data);
-        let select = document.getElementById("fecha");
-        datos.forEach(element => {
-            let fechaValue = `${mesesArray[element.mes-1]}, ${element.anio}`;
-            select.innerHTML +=
-                `<option id="${element.mes}-${element.anio}" value="${fechaValue}">${fechaValue}</option>`;
-        })
-        cargaData();
-    }).fail(function(error) {
-        console.log(error)
-    })
-}
 
 function ordenarPor(event) {
 
