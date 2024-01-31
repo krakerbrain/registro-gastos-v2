@@ -209,7 +209,22 @@ switch ($ingresar) {
             $query->bindParam(':gasto', $gasto);
             $query->execute();
             $result = $query->fetchAll(PDO::FETCH_ASSOC);
-            $json_result = json_encode($result);
+            if (count($result) > 0) {
+                $json_result = json_encode($result);
+            } else {
+                $insertaNuevoTipoGasto = $con->prepare("INSERT INTO tipo_gastos (idusuario, descripcion, created_at, updated_at) VALUES (:idusuario, :gasto, now(), now())");
+                $insertaNuevoTipoGasto->bindParam(':idusuario', $idusuario);
+                $insertaNuevoTipoGasto->bindParam(':gasto', $gasto);
+                $insertaNuevoTipoGasto->execute();
+                // Obtener el último ID insertado después de la inserción
+                $lastInsertedId = $con->lastInsertId();
+
+                // Crear un array asociativo con la estructura deseada
+                $response = array(array('id' => $lastInsertedId));
+
+                // Convierte el array asociativo a JSON
+                $json_result = json_encode($response);
+            }
             echo $json_result;
             break;
         } catch (PDOException $e) {

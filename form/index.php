@@ -109,7 +109,7 @@ document.getElementById("btnRegistraGasto").addEventListener("click", async func
             console.log(error)
         });
     } else {
-        console.log(mensajeError)
+        alert(mensajeError);
     }
 
 });
@@ -235,11 +235,7 @@ document.getElementById("autocomplete-details").addEventListener("input", async 
             $(this).autocomplete("search");
         });
 
-        if (data == "[]") {
-            addBtn.style.display = "block";
-        } else {
-            addBtn.style.display = "none";
-        }
+        addBtn.style.display = "block";
 
     }).fail(function(error) {
         console.log(error)
@@ -338,6 +334,7 @@ async function agregaDescripcion(id, descripcion, editar) {
         document.getElementById("borrarTextoTipoGasto").style.display = "block";
         resetDetallesSeleccionados();
     }
+
     btnDetalles(id)
     // listaDetalles(id);
     document.getElementById("tipoGasto").value = descripcion;
