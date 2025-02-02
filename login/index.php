@@ -62,13 +62,15 @@ include "../partials/header.php";
                         <div class="input-group-text bg-primary text-light">
                             <i class="fa-solid fa-user"></i>
                         </div>
-                        <input type="text" name="usuario" id="usuario" class="form-control" placeholder="Ingrese su usuario">
+                        <input type="text" name="usuario" id="usuario" class="form-control"
+                            placeholder="Ingrese su usuario">
                     </div>
                     <div class="input-group mt-3">
                         <div class="input-group-text bg-primary text-light">
                             <i class="fa-solid fa-key"></i>
                         </div>
-                        <input type="password" name="contrasenia" id="contrasenia" class="form-control" placeholder="Ingrese su contraseña">
+                        <input type="password" name="contrasenia" id="contrasenia" class="form-control"
+                            placeholder="Ingrese su contraseña">
                         <div class="input-group-text bg-light">
                             <a href="#" class="pe-auto text-primary">
                                 <i class="fa-solid fa-eye" onclick="verpass()"></i>

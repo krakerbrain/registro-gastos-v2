@@ -41,40 +41,40 @@
 <div id="showModal"></div>
 
 <script>
-document.getElementById("fecha").addEventListener("change", function() {
-    let fecha = event.currentTarget.selectedOptions[0].id;
-    cargaData(fecha);
-})
+    document.getElementById("fecha").addEventListener("change", function() {
+        let fecha = event.currentTarget.selectedOptions[0].id;
+        cargaData(fecha);
+    })
 
-function ordenarPor(event) {
+    function ordenarPor(event) {
 
-    event.preventDefault();
-    let value = event.target.value;
-    columnaActiva.value = value.split(" ")[0];
-    ordenColumnas.value = value.split(" ")[1] == undefined ? "desc" : value.split(" ")[1];
-    let columna = value.split(" ")[0] == "reset" ? "created_at" : value.split(" ")[0];
-    cargaData(undefined, columna);
-}
+        event.preventDefault();
+        let value = event.target.value;
+        columnaActiva.value = value.split(" ")[0];
+        ordenColumnas.value = value.split(" ")[1] == undefined ? "desc" : value.split(" ")[1];
+        let columna = value.split(" ")[0] == "reset" ? "created_at" : value.split(" ")[0];
+        cargaData(undefined, columna);
+    }
 
-function cargaData(selectedDate, columna) {
-    const select = document.getElementById("fecha");
-    const selectedOption = select.options[select.selectedIndex];
-    let selectedOptionId = selectedDate == undefined ? selectedOption.id : selectedDate;
-    let column = columna == undefined ? 'created_at' : columna;
-    let ordenColumna = document.getElementById("ordenColumnas");
+    function cargaData(selectedDate, columna) {
+        const select = document.getElementById("fecha");
+        const selectedOption = select.options[select.selectedIndex];
+        let selectedOptionId = selectedDate == undefined ? selectedOption.id : selectedDate;
+        let column = columna == undefined ? 'created_at' : columna;
+        let ordenColumna = document.getElementById("ordenColumnas");
 
-    cambiaIconoAscDesc(column, ordenColumna.value)
-    $.post("./tabla/conexiones.php", {
-        ingresar: "getData",
-        fechaValue: selectedOptionId,
-        columna: column,
-        ordenColumna: ordenColumna.value
-    }).done(function(data) {
-        let datos = JSON.parse(data);
-        let tbody = document.getElementById("gastos");
-        tbody.innerHTML = "";
-        datos.forEach(element => {
-            tbody.innerHTML += `<tr id="gasto-${element.id}">
+        cambiaIconoAscDesc(column, ordenColumna.value)
+        $.post("./tabla/conexiones.php", {
+            ingresar: "getData",
+            fechaValue: selectedOptionId,
+            columna: column,
+            ordenColumna: ordenColumna.value
+        }).done(function(data) {
+            let datos = JSON.parse(data);
+            let tbody = document.getElementById("gastos");
+            tbody.innerHTML = "";
+            datos.forEach(element => {
+                tbody.innerHTML += `<tr id="gasto-${element.id}">
                 <td data-cell="gasto" class="data align-baseline" >${element.descripcion}</td>
                 <td data-cell="monto gasto" class="data align-baseline nowrap">${formatoMoneda(element.monto_gasto)}</td>
                 <td data-cell="fecha" class="data align-baseline">${element.fecha}</td>
@@ -89,102 +89,102 @@ function cargaData(selectedDate, columna) {
                                 
                                 </td>
                 </tr>`
-        })
-        totalMes(selectedOptionId);
-    }).fail(function(error) {
-        console.log(error)
-    });
-}
+            })
+            totalMes(selectedOptionId);
+        }).fail(function(error) {
+            console.log(error)
+        });
+    }
 
 
 
-function ordenar(event, columna) {
-    event.preventDefault();
-    let orden = document.getElementById("ordenColumnas");
-    let columnaActiva = document.getElementById("columnaActiva");
+    function ordenar(event, columna) {
+        event.preventDefault();
+        let orden = document.getElementById("ordenColumnas");
+        let columnaActiva = document.getElementById("columnaActiva");
 
-    if (orden.value == "") {
-        orden.value = columna != "created_at" ? "asc" : "desc";
-    } else if (orden.value == "asc") {
-        orden.value = "desc";
-    } else {
-        if (columna != "created_at") {
-            orden.value = "";
+        if (orden.value == "") {
+            orden.value = columna != "created_at" ? "asc" : "desc";
+        } else if (orden.value == "asc") {
+            orden.value = "desc";
         } else {
-            orden.value = orden.value == "asc" ? "desc" : "asc";
+            if (columna != "created_at") {
+                orden.value = "";
+            } else {
+                orden.value = orden.value == "asc" ? "desc" : "asc";
+            }
         }
+
+        if (columna != columnaActiva.value && columnaActiva.value != "") {
+            if (columna != "created_at") {
+                orden.value = "asc";
+            } else {
+                orden.value = orden.value == "asc" ? "desc" : "asc";
+            }
+        }
+        columnaActiva.value = columna;
+        columna = orden.value == "" ? "created_at" : columna;
+        cargaData(undefined, columna);
     }
 
-    if (columna != columnaActiva.value && columnaActiva.value != "") {
-        if (columna != "created_at") {
-            orden.value = "asc";
+    function cambiaIconoAscDesc(columna, orden) {
+        let element = document.getElementById("i-" + columna);
+        let fecha = document.getElementById("i-created_at");
+        if (orden == "asc") {
+            if (columna != "created_at") {
+                fecha.classList.remove(...fecha.classList);
+            }
+            if (columna == "created_at") {
+                element.classList.remove("fa-chevron-down");
+            }
+            element.classList.add("fa-chevron-up");
+        } else if (orden == "desc") {
+            if (columna != "created_at") {
+                fecha.classList.remove(...fecha.classList);
+            }
+            if (columna == "created_at") {
+                element.classList.remove("fa-chevron-up");
+            }
+            element.classList.add("fa-chevron-down");
         } else {
-            orden.value = orden.value == "asc" ? "desc" : "asc";
+            let columnaActiva = document.getElementById("columnaActiva").value;
+            element = document.getElementById("i-" + columnaActiva);
+            if (columnaActiva != "") {
+                element.classList.remove(...element.classList);
+                element.classList.add("fa-solid");
+                fecha.classList.add("fa-solid");
+                fecha.classList.add("fa-chevron-down");
+            }
         }
     }
-    columnaActiva.value = columna;
-    columna = orden.value == "" ? "created_at" : columna;
-    cargaData(undefined, columna);
-}
 
-function cambiaIconoAscDesc(columna, orden) {
-    let element = document.getElementById("i-" + columna);
-    let fecha = document.getElementById("i-created_at");
-    if (orden == "asc") {
-        if (columna != "created_at") {
-            fecha.classList.remove(...fecha.classList);
-        }
-        if (columna == "created_at") {
-            element.classList.remove("fa-chevron-down");
-        }
-        element.classList.add("fa-chevron-up");
-    } else if (orden == "desc") {
-        if (columna != "created_at") {
-            fecha.classList.remove(...fecha.classList);
-        }
-        if (columna == "created_at") {
-            element.classList.remove("fa-chevron-up");
-        }
-        element.classList.add("fa-chevron-down");
-    } else {
-        let columnaActiva = document.getElementById("columnaActiva").value;
-        element = document.getElementById("i-" + columnaActiva);
-        if (columnaActiva != "") {
-            element.classList.remove(...element.classList);
-            element.classList.add("fa-solid");
-            fecha.classList.add("fa-solid");
-            fecha.classList.add("fa-chevron-down");
-        }
+    function editarGasto(element) {
+        // Recupera los valores de los atributos data-*
+        const monto = element.getAttribute('data-monto');
+        const fecha = element.getAttribute('data-creado');
+        const descripcion = element.getAttribute('data-descripcion');
+        const idTipoGasto = element.getAttribute('data-idTipoGasto');
+        const idGasto = element.getAttribute('data-idGasto');
+
+        $.post("./tabla/conexiones.php", {
+            ingresar: "actualizaDetalles",
+            idGasto: idGasto
+        }).done(function(data) {
+            let result = JSON.parse(data);
+            if (result) {
+                window.location.href =
+                    `${"<?php echo $baseUrl . 'index.php'; ?>"}?tipoForm=Editar&montoGasto=${monto}&fecha=${fecha}&descripcion=${descripcion}&idTipoGasto=${idTipoGasto}&idGasto=${idGasto}`;
+
+            }
+
+        }).fail(function(error) {
+            console.log(error)
+        });
+
     }
-}
 
-function editarGasto(element) {
-    // Recupera los valores de los atributos data-*
-    const monto = element.getAttribute('data-monto');
-    const fecha = element.getAttribute('data-creado');
-    const descripcion = element.getAttribute('data-descripcion');
-    const idTipoGasto = element.getAttribute('data-idTipoGasto');
-    const idGasto = element.getAttribute('data-idGasto');
-
-    $.post("./tabla/conexiones.php", {
-        ingresar: "actualizaDetalles",
-        idGasto: idGasto
-    }).done(function(data) {
-        let result = JSON.parse(data);
-        if (result) {
-            window.location.href =
-                `${"<?php echo $_ENV['URL_INICIO']; ?>"}?tipoForm=Editar&montoGasto=${monto}&fecha=${fecha}&descripcion=${descripcion}&idTipoGasto=${idTipoGasto}&idGasto=${idGasto}`;
-
-        }
-
-    }).fail(function(error) {
-        console.log(error)
-    });
-
-}
-
-function creamodal(idgasto, descripcion) {
-    document.getElementById("showModal").innerHTML = `<div class="modal fade" id="eliminaGastoModal" tabindex="-1" role="dialog" aria-labelledby="eliminaGastoModalLabel"
+    function creamodal(idgasto, descripcion) {
+        document.getElementById("showModal").innerHTML = `<div class="modal fade" id="eliminaGastoModal" tabindex="-1" role="dialog" aria-labelledby="eliminaGastoModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -204,84 +204,84 @@ function creamodal(idgasto, descripcion) {
         </div>
     </div>
 </div>`
-}
-
-function eliminarGasto(idGasto) {
-    $.post("./tabla/conexiones.php", {
-        ingresar: "eliminaGasto",
-        idGasto: idGasto
-    }).done(function(data) {
-        if (data != "") {
-            console.log(data)
-        } else {
-            cargaMeses();
-            $('#eliminaGastoModal').modal('hide');
-        }
-    }).fail(function(error) {
-        console.log(error)
-    });
-}
-
-async function despliegaDesc(event, id) {
-    event.preventDefault();
-    const descripciones = document.getElementById(`descripciones-${id}`);
-    if (descripciones === null) {
-        const tr_padre = document.getElementById(id);
-        const nuevaFila = document.createElement('tr');
-        nuevaFila.setAttribute('id', `descripciones-${id}`);
-        const nuevoTd = document.createElement('td');
-        nuevoTd.setAttribute('colspan', '4');
-        nuevaFila.appendChild(nuevoTd);
-        tr_padre.after(nuevaFila);
-        modificaIcono(id, 'ver');
-        nuevoTd.innerHTML = await obtenerDescripciones(id.split('-')[1]);
-    } else {
-        descripciones.remove();
-        modificaIcono(id, 'ocultar');
     }
-}
 
-function modificaIcono(id, evento) {
-    let icono = document.getElementById("icono-ver-" + id); // seleccionar el elemento por su id
-    if (evento == "ver") {
-        icono.classList.remove("fa-eye"); // eliminar la clase "fa-eye"
-        icono.classList.add("fa-eye-slash");
-    } else {
-        icono.classList.remove("fa-eye-slash");
-        icono.classList.add("fa-eye"); // eliminar la clase "fa-eye"
-    }
-}
-
-function obtenerDescripciones(gasto_id) {
-    return new Promise((resolve, reject) => {
+    function eliminarGasto(idGasto) {
         $.post("./tabla/conexiones.php", {
-            ingresar: "getDescripciones",
-            gasto_id: gasto_id
+            ingresar: "eliminaGasto",
+            idGasto: idGasto
         }).done(function(data) {
-            let datos = JSON.parse(data);
-            let html =
-                `<small style="font-weight:bold">Detalles del gasto:</small><br><span>${datos.join(", ")}</span>`;
-            resolve(html);
+            if (data != "") {
+                console.log(data)
+            } else {
+                cargaMeses();
+                $('#eliminaGastoModal').modal('hide');
+            }
         }).fail(function(error) {
-            reject(error);
+            console.log(error)
         });
-    })
-}
+    }
 
-function totalMes(fecha) {
-    $.post("./tabla/conexiones.php", {
-        ingresar: "totalMes",
-        fecha: fecha
-    }).done(function(data) {
-        document.getElementById("totalMes").textContent = `Total Mes ${formatoMoneda(data)}`;
-    }).fail(function(error) {
-        console.log(error)
+    async function despliegaDesc(event, id) {
+        event.preventDefault();
+        const descripciones = document.getElementById(`descripciones-${id}`);
+        if (descripciones === null) {
+            const tr_padre = document.getElementById(id);
+            const nuevaFila = document.createElement('tr');
+            nuevaFila.setAttribute('id', `descripciones-${id}`);
+            const nuevoTd = document.createElement('td');
+            nuevoTd.setAttribute('colspan', '4');
+            nuevaFila.appendChild(nuevoTd);
+            tr_padre.after(nuevaFila);
+            modificaIcono(id, 'ver');
+            nuevoTd.innerHTML = await obtenerDescripciones(id.split('-')[1]);
+        } else {
+            descripciones.remove();
+            modificaIcono(id, 'ocultar');
+        }
+    }
+
+    function modificaIcono(id, evento) {
+        let icono = document.getElementById("icono-ver-" + id); // seleccionar el elemento por su id
+        if (evento == "ver") {
+            icono.classList.remove("fa-eye"); // eliminar la clase "fa-eye"
+            icono.classList.add("fa-eye-slash");
+        } else {
+            icono.classList.remove("fa-eye-slash");
+            icono.classList.add("fa-eye"); // eliminar la clase "fa-eye"
+        }
+    }
+
+    function obtenerDescripciones(gasto_id) {
+        return new Promise((resolve, reject) => {
+            $.post("./tabla/conexiones.php", {
+                ingresar: "getDescripciones",
+                gasto_id: gasto_id
+            }).done(function(data) {
+                let datos = JSON.parse(data);
+                let html =
+                    `<small style="font-weight:bold">Detalles del gasto:</small><br><span>${datos.join(", ")}</span>`;
+                resolve(html);
+            }).fail(function(error) {
+                reject(error);
+            });
+        })
+    }
+
+    function totalMes(fecha) {
+        $.post("./tabla/conexiones.php", {
+            ingresar: "totalMes",
+            fecha: fecha
+        }).done(function(data) {
+            document.getElementById("totalMes").textContent = `Total Mes ${formatoMoneda(data)}`;
+        }).fail(function(error) {
+            console.log(error)
+        });
+
+    }
+
+    const formatoMoneda = moneda => Math.round(moneda).toLocaleString('es-CL', {
+        style: 'currency',
+        currency: 'CLP'
     });
-
-}
-
-const formatoMoneda = moneda => Math.round(moneda).toLocaleString('es-CL', {
-    style: 'currency',
-    currency: 'CLP'
-});
 </script>

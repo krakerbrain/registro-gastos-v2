@@ -1,19 +1,19 @@
 <nav class="navbar navbar-dark bg-primary mb-3">
-    <a class="navbar-brand ms-2" href="<?= $_ENV['URL_INICIO'] ?>">Gastos de Mario</a>
+    <a class="navbar-brand ms-2" href="<?= $baseUrl . 'index.php' ?>">Gastos de Mario</a>
     <a href="#" class="text-light me-2" onclick="confirmarCerrarSesion()">Cerrar sesión</a>
 </nav>
 <ul class="nav nav-pills nav-justified mb-3">
     <li class="nav-item">
         <a class="nav-link <?= $indice == "inicio" ? "active" : "" ?>" aria-current=""
-            href="<?= $_ENV['URL_INICIO'] ?>">Inicio</a>
+            href="<?= $baseUrl . 'index.php' ?>">Inicio</a>
     </li>
     <li class="nav-item">
         <a class="nav-link <?= $indice == "estadisticas" ? "active" : "" ?>"
-            href="<?= $_ENV['URL_ESTADISTICAS'] ?>">Estadísticas</a>
+            href="<?= $baseUrl . 'tabla_gastos/index.php' ?>">Estadísticas</a>
     </li>
     <li class="nav-item">
         <a class="nav-link <?= $indice == "detalles" ? "active" : "" ?>"
-            href="<?= $_ENV['URL_DETALLES'] ?>">Detalles</a>
+            href="<?= $baseUrl . 'detalles/index.php' ?>">Detalles</a>
     </li>
 </ul>
 <!-- Modal de confirmación -->
@@ -32,14 +32,14 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <a href="<?= $_ENV['URL_SESSION'] ?>" class="btn btn-primary">Cerrar Sesión</a>
+                <a href="<?= $baseUrl . 'login/cerrarsesion.php' ?>" class="btn btn-primary">Cerrar Sesión</a>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-function confirmarCerrarSesion() {
-    $('#confirmModal').modal('show');
-}
+    function confirmarCerrarSesion() {
+        $('#confirmModal').modal('show');
+    }
 </script>

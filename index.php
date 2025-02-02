@@ -2,9 +2,14 @@
 session_start();
 $sesion = isset($_SESSION['usuario']);
 require __DIR__ . '/config.php';
+require_once __DIR__ . '/config/ConfigUrl.php';
+$baseUrl = ConfigUrl::get();
+
 $indice = "inicio";
+
 if (!$sesion) {
-    header($_ENV['URL_LOCAL']);
+    header("Location: " . $baseUrl . 'login/index.php');
+    exit;
 }
 include "partials/header.php";
 
@@ -28,27 +33,27 @@ $fecha = isset($_REQUEST['fecha']) ? $_REQUEST['fecha'] : "";
         </div>
     </div>
     <?php if ($tipoFormulario != "Editar") { ?>
-    <script>
-    let accion = "";
-    window.onload = function() {
-        btnMasFrecuente();
-        listaGastos();
-        resetDetallesSeleccionados();
-    }
-    </script>
+        <script>
+            let accion = "";
+            window.onload = function() {
+                btnMasFrecuente();
+                listaGastos();
+                resetDetallesSeleccionados();
+            }
+        </script>
     <?php } else { ?>
-    <script>
-    let idTipoGasto = <?= $idTipoGasto ?>;
-    let descripcion = "<?= $descripcion ?>";
-    accion = "<?= $tipoFormulario ?>";
-    let fecha = "<?= $fecha ?>";
-    window.onload = function() {
-        agregaDescripcion(idTipoGasto, descripcion, "editar");
-        listaGastos();
-        muestraX();
-        btnDetallesSeleccionados()
-    }
-    </script>
+        <script>
+            let idTipoGasto = <?= $idTipoGasto ?>;
+            let descripcion = "<?= $descripcion ?>";
+            accion = "<?= $tipoFormulario ?>";
+            let fecha = "<?= $fecha ?>";
+            window.onload = function() {
+                agregaDescripcion(idTipoGasto, descripcion, "editar");
+                listaGastos();
+                muestraX();
+                btnDetallesSeleccionados()
+            }
+        </script>
     <?php } ?>
     <?php include "partials/boostrap_script.php"; ?>
 

@@ -2,9 +2,12 @@
 session_start();
 $sesion = isset($_SESSION['usuario']);
 require '../config.php';
+require_once dirname(__DIR__) . '/config/ConfigUrl.php';
+$baseUrl = ConfigUrl::get();
 $indice = "detalles";
-if ($sesion == null || $sesion == "") {
-    header($_ENV['URL_LOCAL']);
+if (!$sesion) {
+    header("Location: " . $baseUrl . 'login/index.php');
+    exit;
 }
 include "../partials/header.php";
 ?>
@@ -30,6 +33,6 @@ include "../partials/header.php";
     }
 </script>
 <?php
-
+include "../partials/boostrap_script.php";
 include "../partials/footer.php";
 ?>
