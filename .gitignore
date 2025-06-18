@@ -1,2 +1,5 @@
 .env
 notes.md
+/vendor
+composer.lock 
+composer.phar

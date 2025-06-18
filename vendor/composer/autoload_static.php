@@ -22,6 +22,7 @@ class ComposerStaticInit2c111232ae0f127cee8428d72c3f4cce
         'P' => 
         array (
             'PhpOption\\' => 10,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'M' => 
         array (
@@ -53,6 +54,10 @@ class ComposerStaticInit2c111232ae0f127cee8428d72c3f4cce
         'PhpOption\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'Mario\\RegistroGastosV2\\' => 
         array (

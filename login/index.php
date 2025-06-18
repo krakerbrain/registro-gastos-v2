@@ -50,11 +50,11 @@ include "../partials/header.php";
                     <div class="form-group text-center mt-3">
                         <div class="mb-3">
                             <?php if ($creado == "true") { ?>
-                                <span class="text-primary fw-semibold">¡Se ha registrado correctamente!</span><br>
-                                <small>Por favor ingrese al sistema.</small>
+                            <span class="text-primary fw-semibold">¡Se ha registrado correctamente!</span><br>
+                            <small>Por favor ingrese al sistema.</small>
                             <?php } else if ($cambio_clave == "true") { ?>
-                                <span class="text-primary fw-semibold">¡El cambio de clave ha sido exitoso!</span><br>
-                                <small>Por favor ingrese al sistema.</small>
+                            <span class="text-primary fw-semibold">¡El cambio de clave ha sido exitoso!</span><br>
+                            <small>Por favor ingrese al sistema.</small>
                             <?php } ?>
                         </div>
                     </div>
@@ -81,13 +81,17 @@ include "../partials/header.php";
                         <input type="submit" value="Ingresar" class="btn btn-primary w-100">
                     </div>
                     <?php if ($error == "true") { ?>
-                        <span class=" d-flex justify-content-center mt-1">Password incorrecto.</span>
+                    <span class=" d-flex justify-content-center mt-1">Password incorrecto.</span>
                     <?php } else if ($error == "vacio") { ?>
-                        <span class=" d-flex justify-content-center mt-1">Debe llenar todos los campos.</span>
+                    <span class=" d-flex justify-content-center mt-1">Debe llenar todos los campos.</span>
                     <?php } else if ($error == "noexiste") { ?>
-                        <span class=" d-flex justify-content-center mt-1">Usuario No Existe.</span>
+                    <span class=" d-flex justify-content-center mt-1">Usuario No Existe.</span>
                     <?php } ?>
                 </form>
+                <div class="text-center">
+                    <a href="recuperar_contrasena.php" class="text-decoration-none text-primary fw-semibold">Recuperar
+                        Contraseña</a>
+                </div>
                 <div class="d-flex gap-1 justify-content-center mt-1">
                     <div style="margin-right:5px">¿No tiene una cuenta?</div>
                     <a href="registro.php" class="text-decoration-none text-primary fw-semibold">Registrese</a>
@@ -97,8 +101,8 @@ include "../partials/header.php";
                 </a> -->
 
                 <script>
-                    function verpass() {
-                        var pass = document.getElementById('contrasenia');
-                        pass.type = pass.type == "password" ? "text" : "password"
-                    }
+                function verpass() {
+                    var pass = document.getElementById('contrasenia');
+                    pass.type = pass.type == "password" ? "text" : "password"
+                }
                 </script>

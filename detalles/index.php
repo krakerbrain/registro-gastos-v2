@@ -18,18 +18,14 @@ include "../partials/header.php";
         <div class="col-md-6">
             <?php include "../partials/navbar.php" ?>
             <?php include "resumen_gastos/index.php" ?>
-            <?php include "resumen_items/index.php" ?>
         </div>
     </div>
 </div>
 
 <script>
     window.onload = function() {
-
         cargaMeses();
-        listaGastos();
-
-
+        // listaGastos();
     }
 </script>
 <?php
