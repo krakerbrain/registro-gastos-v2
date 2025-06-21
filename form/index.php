@@ -100,7 +100,7 @@
                     // Operación completada con éxito
                     console.log(data.message); // Muestra un mensaje al usuario
                     window.location.href =
-                        "<?php echo $baseUrl . 'tabla_gastos/index.php' ?>";
+                        "<?php echo $baseUrl . 'historial/index.php' ?>";
                 } else {
                     // Ocurrió un error
                     console.error(data.message);

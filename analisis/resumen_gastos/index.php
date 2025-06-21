@@ -93,7 +93,7 @@
         let anio = selectedOptionId.split("-")[1];
         let sumData = 0;
 
-        $.post("../detalles/conexiones.php", {
+        $.post("../analisis/conexiones.php", {
             ingresar: "getResumenGastos",
             mes: mes,
             anio: anio
@@ -139,7 +139,7 @@
         document.getElementById("tituloDetalleGasto").textContent = gasto;
 
         // Cargar los detalles
-        $.post("../detalles/conexiones.php", {
+        $.post("../analisis/conexiones.php", {
             ingresar: "getItemDetails",
             gasto: gasto,
             mes: mes,

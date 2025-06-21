@@ -6,7 +6,7 @@ function fechaActual() {
 }
 
 function cargaMeses() {
-  $.post("../tabla_gastos/tabla/conexiones.php", {
+  $.post("../historial/tabla/conexiones.php", {
     ingresar: "getFecha",
   })
     .done(function (data) {
