@@ -192,15 +192,22 @@ include "../partials/header.php";
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // Actualizar la lista
-                            const li = document.createElement('li');
-                            li.className = 'list-group-item';
-                            li.dataset.id = data.id;
-                            li.innerHTML = `
-                ${descripcion}
-                <button class="btn btn-sm btn-danger float-end btnEliminar">×</button>
+                            // Crear el HTML del nuevo botón usando template literal
+                            const nuevoBoton = `
+                <div class="d-flex align-items-center mb-2 mr-2" style="background-color: #0d6efd; color: white">
+                    <button class="btn btn-primary btn-sm text-truncate" 
+                        style="border-radius: 0; max-width: 150px"
+                        data-id="${data.id}" 
+                        data-nombre="${descripcion.replace(/"/g, '&quot;')}">
+                        ${descripcion}
+                    </button>
+                    <button class="btn btn-sm btn-info btnEliminar" style="border-radius: 0;">×</button>
+                </div>
             `;
-                            document.getElementById('listaRecurrentes').appendChild(li);
+
+                            // Insertar el nuevo botón en #listaRecurrentes (al final)
+                            document.getElementById('listaRecurrentes').insertAdjacentHTML('beforeend',
+                                nuevoBoton);
 
                             // Resetear formulario
                             document.getElementById('buscarTipoGasto').value = '';
@@ -251,6 +258,35 @@ include "../partials/header.php";
                     }
                 }
             }
+
+            // Evento delegado para eliminar gastos (funciona para elementos dinámicos)
+            document.getElementById('listaRecurrentes').addEventListener('click', function(e) {
+                if (e.target.classList.contains('btnEliminar')) {
+                    const buttonContainer = e.target.closest('.d-flex'); // Sube hasta el contenedor flex
+                    const mainButton = buttonContainer.querySelector('.btn-primary');
+                    const gastoId = mainButton.dataset.id;
+
+                    if (confirm('¿Eliminar este gasto recurrente?')) {
+                        fetch('eliminar_recurrente.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: gastoId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    buttonContainer.remove(); // Elimina visualmente el elemento
+                                } else {
+                                    alert(data.error || 'Error al eliminar');
+                                }
+                            });
+                    }
+                }
+            });
         </script>
 
         <?php
