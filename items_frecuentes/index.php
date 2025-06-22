@@ -1,5 +1,5 @@
 <!-- <fieldset style="all:revert;display:none" class="mb-3"> -->
-<fieldset style="all:revert;display:none" class="mb-3" id="fieldsetDetalles">
+<fieldset style="display:none" class="mb-3" id="fieldsetDetalles">
     <legend style="all:revert">Items frecuentes</legend>
     <div id="detallesGastos"></div>
 </fieldset>
@@ -12,7 +12,7 @@
         }).done(function(data) {
             let datos = JSON.parse(data);
             if (datos.length > 0) {
-                showFieldsetDetalles("block");
+                showFieldsetDetalles(true);
                 document.getElementById("detallesGastos").innerHTML = "";
                 datos.forEach(element => {
                     document.getElementById("detallesGastos").innerHTML += `
@@ -26,16 +26,17 @@
                 `
                 })
             } else {
-                showFieldsetDetalles("none");
+                showFieldsetDetalles(false);
             }
         }).fail(function(error) {
             console.log(error)
         });
     }
 
-    function showFieldsetDetalles(event, element) {
-        if (element != "borrarTextoMontoGasto") {
-            document.getElementById("fieldsetDetalles").style.display = event;
+    function showFieldsetDetalles(show, element) {
+        if (element !== "borrarTextoMontoGasto") {
+            document.getElementById("fieldsetDetalles").style.all = "revert";
+            document.getElementById("fieldsetDetalles").style.display = show ? "block" : "none";
         }
     }
 </script>
