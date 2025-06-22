@@ -81,14 +81,14 @@ include "../partials/header.php";
                 <legend style="all:revert">Mis Gastos Recurrentes</legend>
                 <div class="d-flex justify-content-lg-between flex-wrap gap-2" id="listaRecurrentes">
                     <?php foreach ($gastos_recurrentes as $gasto): ?>
-                    <div class="d-flex align-items-center mb-2 mr-2" style="background-color: #0d6efd; color: white">
-                        <button class="btn btn-primary btn-sm"
-                            style="border-radius: 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 150px;"
-                            data-id="<?= $gasto['id'] ?>" data-nombre="<?= htmlspecialchars($gasto['nombre_gasto']) ?>">
-                            <?= htmlspecialchars($gasto['nombre_gasto']) ?>
-                        </button>
-                        <button class="btn btn-sm btn-info btnEliminar" style="border-radius: 0;">×</button>
-                    </div>
+                        <div class="d-flex align-items-center mb-2 mr-2" style="background-color: #0d6efd; color: white">
+                            <button class="btn btn-primary btn-sm"
+                                style="border-radius: 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 150px;"
+                                data-id="<?= $gasto['id'] ?>" data-nombre="<?= htmlspecialchars($gasto['nombre_gasto']) ?>">
+                                <?= htmlspecialchars($gasto['nombre_gasto']) ?>
+                            </button>
+                            <button class="btn btn-sm btn-info btnEliminar" style="border-radius: 0;">×</button>
+                        </div>
                     <?php endforeach; ?>
                 </div>
                 <button id="btnAnalizar" class="btn btn-success mt-3">Analizar Gastos</button>
@@ -99,101 +99,101 @@ include "../partials/header.php";
         </div>
 
         <script>
-        // Variables globales
-        let selectedTipoId = null;
-        let selectedDescripcionId = null;
+            // Variables globales
+            let selectedTipoId = null;
+            let selectedDescripcionId = null;
 
-        // Buscar tipos de gasto
-        document.getElementById('buscarTipoGasto').addEventListener('input', function() {
-            const query = this.value;
-            if (query.length < 2) {
-                document.getElementById('sugerenciasTipo').innerHTML = '';
-                return;
-            }
+            // Buscar tipos de gasto
+            document.getElementById('buscarTipoGasto').addEventListener('input', function() {
+                const query = this.value;
+                if (query.length < 2) {
+                    document.getElementById('sugerenciasTipo').innerHTML = '';
+                    return;
+                }
 
-            fetch(`buscar_tipos_gastos.php?q=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => {
-                    const sugerencias = document.getElementById('sugerenciasTipo');
-                    sugerencias.innerHTML = '';
-                    data.forEach(item => {
-                        const option = document.createElement('a');
-                        option.className = 'list-group-item list-group-item-action';
-                        option.textContent = item.descripcion;
-                        option.dataset.id = item.id;
-                        option.onclick = () => {
-                            document.getElementById('buscarTipoGasto').value = item
-                                .descripcion;
-                            selectedTipoId = item.id;
-                            sugerencias.innerHTML = '';
-                            // Mostrar campo para descripción
-                            document.getElementById('seccionDescripcion').style.display =
-                                'block';
-                            document.getElementById('btnAgregar').disabled = true;
-                        };
-                        sugerencias.appendChild(option);
-                    });
-                });
-        });
-
-        // Buscar descripciones de gasto
-        document.getElementById('buscarDescripcion').addEventListener('input', function() {
-            if (!selectedTipoId) return;
-
-            const query = this.value;
-            if (query.length < 2) {
-                document.getElementById('sugerenciasDescripcion').innerHTML = '';
-                return;
-            }
-
-            fetch(`buscar_descripciones.php?q=${encodeURIComponent(query)}&tipo_gasto_id=${selectedTipoId}`)
-                .then(response => response.json())
-                .then(data => {
-                    const sugerencias = document.getElementById('sugerenciasDescripcion');
-                    sugerencias.innerHTML = '';
-                    data.forEach(item => {
-                        const option = document.createElement('a');
-                        option.className =
-                            `list-group-item list-group-item-action ${item.ya_existe ? 'text-muted' : ''}`;
-                        option.textContent = item.descripcion;
-                        option.dataset.id = item.id;
-                        if (!item.ya_existe) {
+                fetch(`buscar_tipos_gastos.php?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const sugerencias = document.getElementById('sugerenciasTipo');
+                        sugerencias.innerHTML = '';
+                        data.forEach(item => {
+                            const option = document.createElement('a');
+                            option.className = 'list-group-item list-group-item-action';
+                            option.textContent = item.descripcion;
+                            option.dataset.id = item.id;
                             option.onclick = () => {
-                                document.getElementById('buscarDescripcion').value = item
+                                document.getElementById('buscarTipoGasto').value = item
                                     .descripcion;
-                                selectedDescripcionId = item.id;
+                                selectedTipoId = item.id;
                                 sugerencias.innerHTML = '';
-                                document.getElementById('btnAgregar').disabled = false;
+                                // Mostrar campo para descripción
+                                document.getElementById('seccionDescripcion').style.display =
+                                    'block';
+                                document.getElementById('btnAgregar').disabled = true;
                             };
-                        }
-                        sugerencias.appendChild(option);
+                            sugerencias.appendChild(option);
+                        });
                     });
-                });
-        });
+            });
 
-        // Agregar a la lista
-        document.getElementById('btnAgregar').addEventListener('click', function() {
-            const descripcion = document.getElementById('buscarDescripcion').value.trim();
-            if (!descripcion || !selectedDescripcionId) {
-                alert('Por favor completa la selección');
-                return;
-            }
+            // Buscar descripciones de gasto
+            document.getElementById('buscarDescripcion').addEventListener('input', function() {
+                if (!selectedTipoId) return;
 
-            fetch('guardar_recurrente.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        descripcion_gasto_id: selectedDescripcionId,
-                        descripcion: descripcion
+                const query = this.value;
+                if (query.length < 2) {
+                    document.getElementById('sugerenciasDescripcion').innerHTML = '';
+                    return;
+                }
+
+                fetch(`buscar_descripciones.php?q=${encodeURIComponent(query)}&tipo_gasto_id=${selectedTipoId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const sugerencias = document.getElementById('sugerenciasDescripcion');
+                        sugerencias.innerHTML = '';
+                        data.forEach(item => {
+                            const option = document.createElement('a');
+                            option.className =
+                                `list-group-item list-group-item-action ${item.ya_existe ? 'text-muted' : ''}`;
+                            option.textContent = item.descripcion;
+                            option.dataset.id = item.id;
+                            if (!item.ya_existe) {
+                                option.onclick = () => {
+                                    document.getElementById('buscarDescripcion').value = item
+                                        .descripcion;
+                                    selectedDescripcionId = item.id;
+                                    sugerencias.innerHTML = '';
+                                    document.getElementById('btnAgregar').disabled = false;
+                                };
+                            }
+                            sugerencias.appendChild(option);
+                        });
+                    });
+            });
+
+            // Agregar a la lista
+            document.getElementById('btnAgregar').addEventListener('click', function() {
+                const descripcion = document.getElementById('buscarDescripcion').value.trim();
+                if (!descripcion || !selectedDescripcionId) {
+                    alert('Por favor completa la selección');
+                    return;
+                }
+
+                fetch('guardar_recurrente.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            descripcion_gasto_id: selectedDescripcionId,
+                            descripcion: descripcion
+                        })
                     })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Crear el HTML del nuevo botón usando template literal
-                        const nuevoBoton = `
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Crear el HTML del nuevo botón usando template literal
+                            const nuevoBoton = `
                 <div class="d-flex align-items-center mb-2 mr-2" style="background-color: #0d6efd; color: white">
                     <button class="btn btn-primary btn-sm text-truncate" 
                         style="border-radius: 0; max-width: 150px"
@@ -205,59 +205,88 @@ include "../partials/header.php";
                 </div>
             `;
 
-                        // Insertar el nuevo botón en #listaRecurrentes (al final)
-                        document.getElementById('listaRecurrentes').insertAdjacentHTML('beforeend',
-                            nuevoBoton);
+                            // Insertar el nuevo botón en #listaRecurrentes (al final)
+                            document.getElementById('listaRecurrentes').insertAdjacentHTML('beforeend',
+                                nuevoBoton);
 
-                        // Resetear formulario
-                        document.getElementById('buscarTipoGasto').value = '';
-                        document.getElementById('buscarDescripcion').value = '';
-                        document.getElementById('seccionDescripcion').style.display = 'none';
-                        document.getElementById('btnAgregar').disabled = true;
-                        selectedTipoId = null;
-                        selectedDescripcionId = null;
-                    } else {
-                        alert(data.error || 'Error al guardar');
-                    }
-                });
-        });
-        // Analizar gastos
-        document.getElementById('btnAnalizar').addEventListener('click', function() {
-            // Selecciona los botones principales (no el de eliminar "×")
-            const botonesGastos = document.querySelectorAll('#listaRecurrentes button.btn-primary');
+                            // Resetear formulario
+                            document.getElementById('buscarTipoGasto').value = '';
+                            document.getElementById('buscarDescripcion').value = '';
+                            document.getElementById('seccionDescripcion').style.display = 'none';
+                            document.getElementById('btnAgregar').disabled = true;
+                            selectedTipoId = null;
+                            selectedDescripcionId = null;
+                        } else {
+                            alert(data.error || 'Error al guardar');
+                        }
+                    });
+            });
+            // Analizar gastos
+            document.getElementById('btnAnalizar').addEventListener('click', function() {
+                // Selecciona los botones principales (no el de eliminar "×")
+                const botonesGastos = document.querySelectorAll('#listaRecurrentes button.btn-primary');
 
-            // Extrae los IDs de los botones seleccionados
-            const ids = Array.from(botonesGastos).map(boton => boton.dataset.id);
+                // Extrae los IDs de los botones seleccionados
+                const ids = Array.from(botonesGastos).map(boton => boton.dataset.id);
 
-            // Envía la solicitud al servidor
-            fetch('analizar_recurrentes.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        ids
+                // Envía la solicitud al servidor
+                fetch('analizar_recurrentes.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            ids
+                        })
                     })
-                })
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('resultadosAnalisis').innerHTML = html;
-                });
-        });
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('resultadosAnalisis').innerHTML = html;
+                    });
+            });
 
-        function toggleChevron(chevronId) {
-            const chevron = document.getElementById(chevronId);
-            if (chevron) {
-                // Alternar entre los íconos de flecha
-                if (chevron.classList.contains('bi-chevron-down')) {
-                    chevron.classList.remove('bi-chevron-down');
-                    chevron.classList.add('bi-chevron-up');
-                } else {
-                    chevron.classList.remove('bi-chevron-up');
-                    chevron.classList.add('bi-chevron-down');
+            function toggleChevron(chevronId) {
+                const chevron = document.getElementById(chevronId);
+                if (chevron) {
+                    // Alternar entre los íconos de flecha
+                    if (chevron.classList.contains('bi-chevron-down')) {
+                        chevron.classList.remove('bi-chevron-down');
+                        chevron.classList.add('bi-chevron-up');
+                    } else {
+                        chevron.classList.remove('bi-chevron-up');
+                        chevron.classList.add('bi-chevron-down');
+                    }
                 }
             }
-        }
+
+            // Evento delegado para eliminar gastos (funciona para elementos dinámicos)
+            document.getElementById('listaRecurrentes').addEventListener('click', function(e) {
+                if (e.target.classList.contains('btnEliminar')) {
+                    const buttonContainer = e.target.closest('.d-flex'); // Sube hasta el contenedor flex
+                    const mainButton = buttonContainer.querySelector('.btn-primary');
+                    const gastoId = mainButton.dataset.id;
+
+                    if (confirm('¿Eliminar este gasto recurrente?')) {
+                        fetch('eliminar_recurrente.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    id: gastoId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    buttonContainer.remove(); // Elimina visualmente el elemento
+                                } else {
+                                    alert(data.error || 'Error al eliminar');
+                                }
+                            });
+                    }
+                }
+            });
         </script>
 
         <?php
