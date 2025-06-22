@@ -5,15 +5,19 @@
 <ul class="nav nav-pills nav-justified mb-3">
     <li class="nav-item">
         <a class="nav-link <?= $indice == "inicio" ? "active" : "" ?>" aria-current=""
-            href="<?= $baseUrl . 'index.php' ?>">Inicio</a>
+            href="<?= $baseUrl . 'index.php' ?>">Registrar</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link <?= $indice == "estadisticas" ? "active" : "" ?>"
-            href="<?= $baseUrl . 'tabla_gastos/index.php' ?>">Estadísticas</a>
+        <a class="nav-link <?= $indice == "historial" ? "active" : "" ?>"
+            href="<?= $baseUrl . 'historial/index.php' ?>">Historial</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link <?= $indice == "detalles" ? "active" : "" ?>"
-            href="<?= $baseUrl . 'detalles/index.php' ?>">Detalles</a>
+        <a class="nav-link <?= $indice == "analisis" ? "active" : "" ?>"
+            href="<?= $baseUrl . 'analisis/index.php' ?>">Análisis</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link <?= $indice == "recurrentes" ? "active" : "" ?>"
+            href="<?= $baseUrl . 'gastos-recurrentes/index.php' ?>">Gastos Recurrentes</a>
     </li>
 </ul>
 <!-- Modal de confirmación -->
