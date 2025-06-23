@@ -43,13 +43,6 @@ include "../partials/header.php";
     <div class="row justify-content-center">
         <div class="col-md-6">
             <?php include "../partials/navbar.php"; ?>
-
-            <!-- Formulario de Búsqueda -->
-            <!-- <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h6>➕ Agregar Gasto Recurrente</h6>
-                </div>
-                <div class="card-body"> -->
             <fieldset style="all:revert" class="mb-3" id="fieldsetDetalles">
                 <legend style="all:revert">Gastos Recurrentes</legend>
                 <div id="detallesGastos"></div>
@@ -71,12 +64,6 @@ include "../partials/header.php";
 
                 <button id="btnAgregar" class="btn btn-success mt-2" disabled>Agregar</button>
             </fieldset>
-            <!-- Lista de Gastos Recurrentes -->
-            <!-- <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h6>📝 Mis Gastos Recurrentes</h6>
-                </div>
-                <div class="card-body"> -->
             <fieldset style="all:revert" class="mb-3">
                 <legend style="all:revert">Mis Gastos Recurrentes</legend>
                 <div class="d-flex justify-content-lg-between flex-wrap gap-2" id="listaRecurrentes">

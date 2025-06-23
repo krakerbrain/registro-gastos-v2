@@ -19,6 +19,11 @@
         <a class="nav-link <?= $indice == "recurrentes" ? "active" : "" ?>"
             href="<?= $baseUrl . 'gastos-recurrentes/index.php' ?>">Gastos Recurrentes</a>
     </li>
+    <!-- metricas -->
+    <li class="nav-item">
+        <a class="nav-link <?= $indice == "metricas" ? "active" : "" ?>"
+            href="<?= $baseUrl . 'metricas/index.php' ?>">Métricas</a>
+    </li>
 </ul>
 <!-- Modal de confirmación -->
 <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
