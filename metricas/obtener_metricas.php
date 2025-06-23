@@ -17,20 +17,20 @@ $meses = isset($data['meses']) && is_numeric($data['meses']) ? max(1, min(12, (i
 try {
     // Consulta con PDO para obtener datos históricos
     $query = "SELECT 
-        DATE_FORMAT(g.created_at, '%Y-%m') as mes,
-        COALESCE(SUM(g.monto_gasto), 0) as total
-    FROM gastos g
-    WHERE 
-        g.idusuario = :id_usuario
-        AND g.tipo_gasto_id = :tipo_id
-        AND g.created_at >= (
-            SELECT DATE_SUB(MAX(created_at), INTERVAL :meses MONTH) 
-            FROM gastos 
-            WHERE idusuario = :id_usuario 
-            AND tipo_gasto_id = :tipo_id
-        )
-    GROUP BY mes
-    ORDER BY mes";
+                DATE_FORMAT(g.created_at, '%Y-%m') as mes,
+                COALESCE(SUM(g.monto_gasto), 0) as total
+            FROM gastos g
+            WHERE 
+                g.idusuario = :id_usuario
+                AND g.tipo_gasto_id = :tipo_id
+                AND g.created_at >= (
+                    SELECT DATE(DATE_FORMAT(DATE_SUB(MAX(created_at), INTERVAL :meses MONTH), '%Y-%m-01'))
+                    FROM gastos 
+                    WHERE idusuario = :id_usuario 
+                    AND tipo_gasto_id = :tipo_id
+                )
+            GROUP BY mes
+            ORDER BY mes;";
 
     $stmt = $con->prepare($query);
     $stmt->bindParam(':id_usuario', $_SESSION['id_usuario'], PDO::PARAM_INT);
