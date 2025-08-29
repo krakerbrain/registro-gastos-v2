@@ -16,7 +16,6 @@ function cargaMeses() {
       datos.forEach((element) => {
         let selected;
         let fechaValue = `${mesesArray[element.mes - 1]}, ${element.anio}`;
-
         select.innerHTML += `<option id="${element.mes}-${element.anio}" value="${fechaValue}" ${fechaValue === getFechaActual ? "selected" : ""}>${fechaValue}</option>`;
       });
       cargaData();

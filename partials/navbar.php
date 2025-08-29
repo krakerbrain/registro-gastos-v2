@@ -24,6 +24,9 @@
         <a class="nav-link <?= $indice == "metricas" ? "active" : "" ?>"
             href="<?= $baseUrl . 'metricas/index.php' ?>">Métricas</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="<?= $baseUrl . 'consulta-tipo-gasto/index.php' ?>">Consulta por Tipo de Gasto</a>
+    </li>
 </ul>
 <!-- Modal de confirmación -->
 <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
