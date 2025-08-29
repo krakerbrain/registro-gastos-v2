@@ -74,7 +74,7 @@ include "../partials/header.php";
                     return;
                 }
                 const dias = document.getElementById('dias').value;
-                fetch('consulta_movimientos.php?tipo_gasto_id=' + tipoGastoId + '&dias=' + dias)
+                fetch('consulta_movimientos.php?descripcion_gasto_id=' + tipoGastoId + '&dias=' + dias)
                     .then(res => res.text())
                     .then(html => {
                         document.getElementById('resultados').innerHTML = html;

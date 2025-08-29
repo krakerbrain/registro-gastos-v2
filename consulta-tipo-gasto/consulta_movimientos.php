@@ -3,7 +3,7 @@ session_start();
 include __DIR__ . '/../config.php';
 
 $id_usuario = $_SESSION['id_usuario'];
-$descripcion_gasto_id = isset($_GET['tipo_gasto_id']) ? intval($_GET['tipo_gasto_id']) : 0;
+$descripcion_gasto_id = isset($_GET['descripcion_gasto_id']) ? intval($_GET['descripcion_gasto_id']) : 0;
 $dias = isset($_GET['dias']) ? intval($_GET['dias']) : 30;
 
 if ($descripcion_gasto_id <= 0 || $dias <= 0) {
@@ -29,16 +29,25 @@ $descripcion = $rowTipo['descripcion'];
 $tipo_gasto_nombre = $rowTipo['tipo_gasto_nombre'];
 
 // 2. Buscar los movimientos del tipo_gasto_id
-$sql = "SELECT g.monto_gasto, g.id, g.created_at
+$sql = "SELECT 
+            g.id AS gasto_id,
+            g.monto_gasto,
+            g.created_at,
+            dg.descripcion AS descripcion_gasto,
+            tg.descripcion AS tipo_gasto_nombre
         FROM gastos g
-        WHERE g.idusuario = :id_usuario
-          AND g.tipo_gasto_id = :tipo_gasto_id
+        JOIN descripcion_gasto_gasto dgg ON g.id = dgg.gasto_id
+        JOIN descripcion_gastos dg ON dgg.descripcion_gasto_id = dg.id
+        JOIN tipo_gastos tg ON dg.tipo_gasto_id = tg.id
+        WHERE dg.id = :descripcion_gasto_id
+          AND g.idusuario = :id_usuario
           AND g.created_at >= DATE_SUB(CURDATE(), INTERVAL :dias DAY)
         ORDER BY g.created_at DESC
         LIMIT 100";
+
 $stmt = $con->prepare($sql);
+$stmt->bindParam(':descripcion_gasto_id', $descripcion_gasto_id, PDO::PARAM_INT);
 $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
-$stmt->bindParam(':tipo_gasto_id', $tipo_gasto_id, PDO::PARAM_INT);
 $stmt->bindParam(':dias', $dias, PDO::PARAM_INT);
 $stmt->execute();
 $movimientos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -67,7 +76,7 @@ if (count($movimientos) === 0) {
         <?php foreach ($movimientos as $mov): ?>
             <tr>
                 <td><?= htmlspecialchars($mov['fecha'] ?? $mov['created_at']) ?></td>
-                <td><?= htmlspecialchars($tipo_gasto_nombre) ?></td>
+                <td><?= htmlspecialchars($mov['tipo_gasto_nombre']) ?></td>
                 <td class="text-end">$<?= number_format($mov['monto_gasto'], 2) ?></td>
             </tr>
         <?php endforeach; ?>
