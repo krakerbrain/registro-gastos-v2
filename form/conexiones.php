@@ -129,59 +129,35 @@ switch ($ingresar) {
         }
         break;
     case 'insertarGasto':
-        $monto = $_POST['monto'];
-        $tipoGasto = $_POST['tipoGasto'];
-        $idGasto = $_POST['idGasto'];
-        $detallesId = $_POST['detallesId'];
-        $editar = $_POST['editar'];
-        $fecha = $_POST['fechaEdita'];
+        $monto = floatval($_REQUEST['monto']);
+        $tipoGasto = intval($_REQUEST['tipoGasto']);
+        $detallesId = intval($_REQUEST['detallesId']);
+        $editar = isset($_REQUEST['editar']) && $_REQUEST['editar'] === 'true' ? true : false;
+        $idGasto = intval($_REQUEST['idGasto']);
+        $fechaGasto = isset($_REQUEST['fechaGasto']) && !empty($_REQUEST['fechaGasto']) ? $_REQUEST['fechaGasto'] : date('Y-m-d H:i:s');
 
-        try {
-            $con->beginTransaction();
-            if ($editar) {
-                $query = $con->prepare("DELETE FROM gastos WHERE idusuario = :idusuario and gastos.id = :idGasto");
-                $query->bindParam(':idusuario', $idusuario);
-                $query->bindParam(':idGasto', $idGasto);
-                $query->execute();
-            }
-            // Verifica si $fecha está vacía
-            if (empty($fecha)) {
-                $fechaSQL = date('Y-m-d H:i:s');
-            } else {
-                $fechaSQL = $fecha; // Usa la fecha tal como está
-            }
-
-            $query = $con->prepare("INSERT INTO gastos (idusuario, monto_gasto, tipo_gasto_id, created_at, updated_at) VALUES (:idusuario, :monto, :tipoGasto, :fecha, :fecha)");
-            $query->bindParam(':idusuario', $idusuario);
-            $query->bindParam(':monto', $monto, PDO::PARAM_INT);
+        if ($editar) {
+            // UPDATE
+            $query = $con->prepare("UPDATE gastos SET monto_gasto = :monto, tipo_gasto_id = :tipoGasto, created_at = :fechaGasto, updated_at = NOW() WHERE id = :idGasto AND idusuario = :idusuario");
+            $query->bindParam(':monto', $monto);
             $query->bindParam(':tipoGasto', $tipoGasto);
-            $query->bindParam(':fecha', $fechaSQL);
-
-
-            if ($query->execute()) {
-                $gasto_id = $con->lastInsertId();
-                foreach ($detallesId as $detalleId) {
-                    $query = $con->prepare("INSERT INTO descripcion_gasto_gasto (gasto_id, descripcion_gasto_id, created_at, updated_at) VALUES (:gasto_id, :descripcion_gasto_id, :fecha, :fecha)");
-                    $query->bindParam(':gasto_id', $gasto_id);
-                    $query->bindParam(':descripcion_gasto_id', $detalleId);
-                    $query->bindParam(':fecha', $fechaSQL);
-                    $query->execute();
-                }
-
-                $con->commit(); // Confirma la transacción si todo sale bien.
-                $response['success'] = true;
-                $response['message'] = "Operación completada con éxito";
-            } else {
-                throw new Exception("Error al insertar en la tabla 'gastos'.");
-            }
-        } catch (Exception $e) {
-            $con->rollBack(); // Deshace la transacción en caso de error.
-            $response['success'] = false;
-            $response['message'] = "Error: " . $e->getMessage();
+            $query->bindParam(':fechaGasto', $fechaGasto);
+            $query->bindParam(':idGasto', $idGasto);
+            $query->bindParam(':idusuario', $idusuario);
+        } else {
+            // INSERT
+            $query = $con->prepare("INSERT INTO gastos (idusuario, monto_gasto, tipo_gasto_id, created_at, updated_at) VALUES (:idusuario, :monto, :tipoGasto, :fechaGasto, :fechaGasto)");
+            $query->bindParam(':idusuario', $idusuario);
+            $query->bindParam(':monto', $monto);
+            $query->bindParam(':tipoGasto', $tipoGasto);
+            $query->bindParam(':fechaGasto', $fechaGasto);
         }
-        // Envía la respuesta al cliente.
-        header('Content-Type: application/json');
-        echo json_encode($response);
+
+        if ($query->execute()) {
+            echo json_encode(['success' => true, 'message' => $editar ? 'Gasto actualizado correctamente' : 'Gasto registrado correctamente']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al guardar el gasto']);
+        }
         break;
     case 'insertaTipoGasto':
 
