@@ -1,6 +1,8 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+define('BASE_PATH', __DIR__); // Ajusta BASE_PATH según tu estructura
+require BASE_PATH . '/vendor/autoload.php';
+$ruta = $_SERVER['HTTP_HOST'] === 'localhost' ? BASE_PATH : '/home/u313214080/domains/registro-gastos.fun/private';
+$dotenv = Dotenv\Dotenv::createImmutable($ruta);
 $dotenv->load();
 
 $host = $_ENV['HOST'];
